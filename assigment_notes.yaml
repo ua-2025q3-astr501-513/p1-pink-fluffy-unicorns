@@ -3,6 +3,7 @@
       -- (0) lipika will create boolean mask of unicorn
   b. must be able to include sun spots too
 2. someone figure out how to simulate limb-darkening or alternate transits -- maybe figure out non-spherical masks -- Vivek
-3. someone fits real data (stat and analysis) -- Adi
-4. someone build an interpolation to fill in missing data -- Lipika
-5. exoplanet atmosphere --Lael
+3. someone build an interpolation to fill in missing data -- Lipika
+> get fed a time array and interpolate it
+4. exoplanet atmosphere --Lael
+5. someone fits real data (stat and analysis) -- Adi
