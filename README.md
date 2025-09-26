@@ -15,7 +15,7 @@ To form team, come up with a unique team name and put it in this
 * Prsentation dates:
   October 13th or 15th
 * Submission deadline:
-  By 11:59pm (Arizona tgime) on the day of your presentation
+  By 11:59pm (Arizona time) on the day of your presentation
 * Submission platform: GitHub Classroom
 
 Your final submission should include:
