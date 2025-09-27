@@ -1,0 +1,10 @@
+[project]
+name = "ASTR513 Midterm Project - Pink Fluffy Unicorns"
+version = "1.0"
+license = { file = "LICENSE" }
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "astropy",
+    "scipy"
+]
