@@ -1,6 +1,6 @@
 import numpy as np
 
-def smoothen(dates, fluxes, errors, n=50):
+def smoothen(dates, fluxes, errors, n=25):
     """
     Smoothens a time-series light curve by binning data into equally spaced time intervals
     and computing the weighted mean flux and its associated error for each bin.
@@ -15,7 +15,7 @@ def smoothen(dates, fluxes, errors, n=50):
         Array of 1-sigma uncertainties associated with each flux measurement.
     n : int, optional
         Number of equally spaced time bins to divide the total observation duration into.
-        Default is 50.
+        Default is 25.
 
     Returns
     -------
