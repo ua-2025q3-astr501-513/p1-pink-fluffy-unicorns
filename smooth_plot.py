@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from smoothening import smoothen
+from smoothening.py import smoothen
 
 # datasets = ["Qatar-6 b.txt", "TrES-2 b.txt", "TrES-5 b.txt", "WASP-2 b.txt", "WASP-52 b.txt"]
 
