@@ -25,7 +25,7 @@ plt.axhline(1, ls = '--', c = 'k', zorder= -2, alpha = 0.3)
 
 plt.xlabel(f"Times since JD{data['DATE'][0]} [mins]")
 plt.ylabel("Normalized flux")
-plt.title(f"{dataset[:-6]}")
+plt.title(f"{dataset[:-4]}")
 
 plt.legend()
 plt.show()
