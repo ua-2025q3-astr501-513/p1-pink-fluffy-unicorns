@@ -6,7 +6,7 @@ from smoothening import smoothen
 
 dataset = "Qatar-6 b.txt" # can input any of the 5 datasets listed above
 
-data  = np.genfromtxt(dataset, delimiter=",", names=True, skip_header=23)
+data  = np.genfromtxt("assets/exoplanet_data/"+dataset, delimiter=",", names=True, skip_header=23)
 
 dates = data['DATE']
 dates_mins = (dates - dates[0]) * 24 * 60

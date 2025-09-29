@@ -3,7 +3,7 @@ from scipy.interpolate import interp1d
 from scipy.integrate import quad
 
 class ExoplanetAtmosphere:
-    def __init__(self, opacity_file="./opacity_data.npz"):
+    def __init__(self, opacity_file="assets/opacity_data.npz"):
         """
         Initialize an exoplanet atmosphere model with an Earth-like density profile
         and wavelength-dependent opacities.
