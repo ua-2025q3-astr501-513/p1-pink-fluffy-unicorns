@@ -29,5 +29,42 @@ plt.title(f"{dataset[:-4]}")
 
 plt.legend()
 plt.show()
+
+unicorn = np.load("unicorn_boolean_mask.npz")
+mask = ~unicorn["arr_0"]
+mask[mask > 0] = 1
+
+
+exoplanet = add_atmosphere(mask, func)
+plt.imshow(exoplanet)
+plt.colorbar()
+plt.show()
+
+limb_darkened_star = limbDarken(mask, 1)
+
+plt.imshow(limb_darkened_star)
+plt.show()
+
+# Example:
+Rs = 1 # stellar radius [solar radii]
+Rp = 1 # planet radius [jupiter radii]
+P = 10 # period [days]
+b = 0 # y-axis displacement [n/Rs]
+F = 5 # stellar flux
+nobs = 25 # number of observation 
+tobs = 2*rec_tt(P,Rs) # observing session length (tobs/nobs = "exposure times") [days]
+
+tt = np.linspace(-1*tobs/2, tobs/2, nobs)
+photom = []
+        
+fig, axs = plt.subplots(nobs,1,figsize=(1,nobs))
+for ii in range(nobs):
+    data = photometry(Rs=Rs, Rp=Rp, P=P, t=tt[ii], b=b, F=F, shape='sphere')
+    axs[ii].imshow(data)
+    photom.append(np.sum(data))
     
-np.savetxt('')
+plt.show()
+plt.scatter(range(nobs),photom, marker = 'o')
+plt.ylim(min(photom)-0.01*min(photom),max(photom)+0.01*max(photom))
+plt.show()
+

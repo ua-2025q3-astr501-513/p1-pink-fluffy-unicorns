@@ -7,5 +7,10 @@ dependencies = [
     "matplotlib",
     "astropy",
     "scipy",
-    "cv2"
+    "cv2",
+    "os",
+    "tqdm",
+    "multiprocessing",
+    "PIL",
+    
 ]
