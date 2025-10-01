@@ -94,7 +94,7 @@ def least_sq_fit(model, xdata, ydata, init_params, show_history = False, max_ite
         history.append(sum_sq_errs)
 
         # use the gradient descent algorithm to calculate new params
-        grad = grad_descent(model=model, xdata=xdata, ydata=ydata, params=params, step_size=step_size, learn_rate=learn_rate)
+        grad = grad_descent(model=model, xdata=xdata, ydata=ydata, params=params, step_size=step_size)
 
         # calculate the new params based on the computed gradient and the learning rate
         params = params - learn_rate * grad
