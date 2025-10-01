@@ -30,4 +30,3 @@ plt.title(f"{dataset[:-4]}")
 plt.legend()
 plt.show()
     
-np.savetxt('')
