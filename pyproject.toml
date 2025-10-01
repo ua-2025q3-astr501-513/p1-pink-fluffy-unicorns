@@ -1,7 +1,8 @@
 [project]
-name = "ASTR513_Midterm_Project.Pink_Fluffy_Unicorns"
+name = "astr513-pink-fluffy-unicorns"
 version = "1.0"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "numpy",
     "matplotlib",
@@ -10,5 +11,7 @@ dependencies = [
     "opencv-python",
     "tqdm",
     "Pillow",
-    
 ]
+
+[tool.setuptools.packages.find]
+include = ["pfu_transit"]
