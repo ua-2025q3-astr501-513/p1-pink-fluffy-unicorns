@@ -1,5 +1,5 @@
 [project]
-name = "ASTR513 Midterm Project - Pink Fluffy Unicorns"
+name = "ASTR513_Midterm_Project.Pink_Fluffy_Unicorns"
 version = "1.0"
 license = { file = "LICENSE" }
 dependencies = [
