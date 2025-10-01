@@ -25,6 +25,7 @@ def grad_descent(model, xdata, ydata, params, step_size):
         Calculated gradient of the sum of squared errors
     """
     grad = np.zeros_like(params)
+    y_pred = model(xdata, *params)
 
     for i in range(len(params)):
         # change each parameter individually by the step size and update the gradient accordingly
@@ -35,12 +36,15 @@ def grad_descent(model, xdata, ydata, params, step_size):
         y_plus  = model(xdata, *(params + dparams))
         y_minus = model(xdata, *(params - dparams))
 
-        # Calculate the summed square errors
-        sq_err_plus  = np.sum((ydata - y_plus )**2)
-        sq_err_minus = np.sum((ydata - y_minus)**2)
+        df = (y_plus - y_minus) / (2 * step_size)   # derivative of model output
+        grad[i] = -2 * np.sum((ydata - y_pred) * df)
+
+        # # Calculate the summed square errors
+        # sq_err_plus  = np.sum((ydata - y_plus )**2)
+        # sq_err_minus = np.sum((ydata - y_minus)**2)
 
         # Apply the central difference formula to update the gradient for the specific parameter
-        grad[i] = (sq_err_plus - sq_err_minus)/(2 * step_size)
+        # grad[i] = (sq_err_plus - sq_err_minus)/(2 * step_size)
 
     return grad
 
@@ -67,7 +71,7 @@ def least_sq_fit(model, xdata, ydata, init_params, show_history = False, max_ite
     - tolerance: float
         Stopping tolerance based on magnitude/norm of the gradient, Defaults to 1e-6
     - step_size:  float
-        Value that the params are perturbed by. Defaults to 1e-7
+        Value that the params are perturbed by. Defaults to 1e-3
     - learn_rate: float
         Learning rate for gradient descent. Defaults to 1e-3
 
