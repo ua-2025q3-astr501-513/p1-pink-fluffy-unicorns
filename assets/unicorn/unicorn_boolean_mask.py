@@ -29,19 +29,25 @@ cv2.drawContours(mask, [largest], contourIdx=-1, color=255, thickness=cv2.FILLED
 # remove small/flat contours instead of max-by-area. Ask and I’ll give that variant.
 
 # 7) Build the silhouette: unicorn = black (0), background = white (255)
-silhouette = np.where(mask==255, 0, 255).astype(np.uint8)
+silhouette = ~np.where(mask==255, 0, 255).astype(np.uint8)
 
 # Show
+'''
 plt.figure(figsize=(5,5))
 plt.imshow(silhouette, cmap='gray')
 plt.axis('off')
 plt.show()
 
 # Save
-cv2.imwrite('unicorn_silhouette.png', silhouette)
+#cv2.imwrite('unicorn_silhouette.png', silhouette)
 
 plt.figure()
 plt.imshow(silhouette, cmap = 'gray')
 plt.show()
+'''
 
+silhouette[silhouette > 0] = 1
+silhouette = silhouette[1:, 1:]
+silhouette = silhouette.reshape((np.shape(silhouette)[0] // 2, 2,  np.shape(silhouette)[1] // 2, 2)).sum(3).sum(1)
+silhouette = silhouette[1:, 1:]
 np.savez("unicorn_boolean_mask", silhouette)
