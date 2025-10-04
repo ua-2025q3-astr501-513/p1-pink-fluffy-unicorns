@@ -36,7 +36,7 @@ class Integrate(object):
         return res, i
 
 class ExoplanetAtmosphere:
-    def __init__(self, opacity_file, density_file, max_height = 80 / (c.R_earth.to("km").value)):
+    def __init__(self, opacity_file, density_file, max_height = 80 / (c.R_earth.to("km").value), planet = 'earth'):
         """
         Initialize an exoplanet atmosphere model with an Earth-like density profile
         and wavelength-dependent opacities.
@@ -54,6 +54,8 @@ class ExoplanetAtmosphere:
         dens = np.load(density_file)
 
         self.max_height = max_height
+        if planet == 'jupiter':
+            self.max_height = 7000 / (c.R_jup.to("km").value)
 
         # Create interpolators for opacity and density
         self._opacity_interp = interp1d(
@@ -62,13 +64,13 @@ class ExoplanetAtmosphere:
     )
 
         self._density_interp = interp1d(
-        dens["arr_0"], dens["arr_1"],
+        dens["arr_0"], dens["arr_1"], #radius in cm, density in g cm^-3
         kind="linear", bounds_error=False, fill_value="extrapolate"
     )
 
     # --- Methods ---
 
-    def density_height(self, h_cm, r_planet_cm):
+    def density_height(self, h_cm, r_planet_cm, planet = 'earth'):
         """Atmospheric density [g/cm³] at height h_cm [cm].
            Returns NaN if h outside 0–8e6 cm (~80 km)."""
         
@@ -77,6 +79,14 @@ class ExoplanetAtmosphere:
             return np.nan
         elif np.any((scaled_height > 8e6)):
             return 0
+            
+        if planet == 'jupiter':
+            scaled_height = 7e8*h_cm/(self.max_height*r_planet_cm)
+            if np.any((scaled_height < 0)):
+                return np.nan
+            elif np.any((scaled_height > 7e8)):
+                return 0            
+
         return self._density_interp(scaled_height)
 
     def density_proj_dist(self, d_cm, r_cm, r_planet_cm):
@@ -94,7 +104,7 @@ class ExoplanetAtmosphere:
             -integral_length[i], integral_length[i],
             args=(r_planet_cm+h_cm[mask][i], r_planet_cm,))
 
-    def extinction_sphere(self, h, r_planet, lamb_um, normalize=False, threadcount=20):
+    def extinction_sphere(self, h, r_planet, lamb_um, normalize=False, threadcount=20, planet = 'earth'):
         h_cm  = (h*c.R_sun).to("cm").value
         r_planet_cm  = (r_planet*c.R_sun).to("cm").value
         """
@@ -119,7 +129,9 @@ class ExoplanetAtmosphere:
         max_radius = r_planet_cm + self.max_height * r_planet_cm 
         arg = max_radius**2 - (r_planet_cm+h_cm)**2
         
-        mask = (h_cm / r_planet_cm * 6e8 < 8e6) | (arg > 0)
+        mask = (h_cm / r_planet_cm * c.R_earth.to("cm").value < 8e6) | (arg > 0)
+        if planet == 'jupiter':
+            mask = (h_cm / r_planet_cm * c.R_jup.to("cm").value < 7e8) | (arg > 0)
         
         integral_length = np.sqrt(arg[mask])
         with Pool(threadcount) as pool:
