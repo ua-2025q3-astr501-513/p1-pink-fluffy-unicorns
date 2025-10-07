@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: astr513-pink-fluffy-unicorns
+Version: 1.0
+License-Expression: MIT
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: astropy
+Requires-Dist: scipy
+Requires-Dist: opencv-python
+Requires-Dist: tqdm
+Requires-Dist: Pillow
+Dynamic: license-file
