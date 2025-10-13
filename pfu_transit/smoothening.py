@@ -10,7 +10,7 @@ def weighted_stats(fluxes, errors):
     weighted_std  = np.sqrt(1/np.sum(inverse_var))
 
     return weighted_mean, weighted_std
-
+    
 def smoothen(dates, fluxes, errors, n=15):
     """
     Smoothens a time-series light curve by binning data into equally spaced time intervals
@@ -24,6 +24,8 @@ def smoothen(dates, fluxes, errors, n=15):
         Array of normalized flux measurements corresponding to `dates`.
     errors : array-like
         Array of 1-sigma uncertainties associated with each flux measurement.
+    exoplanet_name: string
+        Name of exoplanet for saving the smooth data points
     n : int, optional
         Number of equally spaced time bins to divide the total observation duration into.
         Default is 25.
@@ -73,6 +75,10 @@ def smoothen(dates, fluxes, errors, n=15):
             mean, std = weighted_stats(fluxes[indices], errors[indices])
             smooth_fluxes.append(mean)
             smooth_errs.append(std)
+
+    data = np.column_stack((bin_centers, smooth_fluxes, smooth_errs))
+
+    np.savetxt(f"assets/smooth_data/{exoplanet_name}_smooth.txt", data, header="time, flux, flux_err", fmt="%.8f",  delimiter=",")
         
     return bin_centers, np.array(smooth_fluxes), np.array(smooth_errs)
     
