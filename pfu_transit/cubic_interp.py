@@ -147,3 +147,6 @@ def cubic_spline_interpolator(x, y, clamp=True):
         return ((d[idx]*dx + c[idx])*dx + b[idx])*dx + a[idx]
 
     return f
+
+
+
