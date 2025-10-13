@@ -78,7 +78,7 @@ def smoothen(dates, fluxes, errors, exoplanet_name, n=15):
 
     data = np.column_stack((bin_centers, smooth_fluxes, smooth_errs))
 
-    np.savetxt(f"{exoplanet_name}_smooth.txt", data, header="time, flux, flux_err", fmt="%.8f",  delimiter=",")
+    np.savetxt(f"assets/smooth_data/{exoplanet_name}_smooth.txt", data, header="time, flux, flux_err", fmt="%.8f",  delimiter=",")
         
     return bin_centers, np.array(smooth_fluxes), np.array(smooth_errs)
     
