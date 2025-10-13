@@ -11,7 +11,7 @@ def weighted_stats(fluxes, errors):
 
     return weighted_mean, weighted_std
     
-def smoothen(dates, fluxes, errors, n=25):
+def smoothen(dates, fluxes, errors, n=16):
     """
     Smoothens a time-series light curve by binning data into equally spaced time intervals
     and computing the weighted mean flux and its associated error for each bin.
