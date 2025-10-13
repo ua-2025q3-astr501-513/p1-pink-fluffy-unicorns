@@ -10,8 +10,8 @@ def weighted_stats(fluxes, errors):
     weighted_std  = np.sqrt(1/np.sum(inverse_var))
 
     return weighted_mean, weighted_std
-    
-def smoothen(dates, fluxes, errors, n=16):
+
+def smoothen(dates, fluxes, errors, n=15):
     """
     Smoothens a time-series light curve by binning data into equally spaced time intervals
     and computing the weighted mean flux and its associated error for each bin.
@@ -46,6 +46,8 @@ def smoothen(dates, fluxes, errors, n=16):
         * Error:  sqrt(1 / sum(1 / err_i^2))
     - Points with smaller error bars contribute more strongly to the weighted mean.
     """
+
+    n+= 1
     
     # calculate the total time of data collection in units of minutes (rounded to closest 5)
     total_time   = (dates[-1] - dates[0]) * 24 * 60
