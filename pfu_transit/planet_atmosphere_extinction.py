@@ -4,6 +4,7 @@ from multiprocessing.pool import ThreadPool as Pool
 from astropy import constants as c
 from tqdm import tqdm
 from scipy.interpolate import interp1d
+import matplotlib.pyplot as plt
 
 def exponential_atmosphere(h, R):
     """
@@ -36,9 +37,9 @@ class Integrate(object):
         return res, i
 
 class ExoplanetAtmosphere:
-    def __init__(self, opacity_file, density_file, max_height = 80 / (c.R_earth.to("km").value)):
+    def __init__(self, opacity_file, density_file, planet_type = "gaseous", max_height = None):
         """
-        Initialize an exoplanet atmosphere model with an Earth-like density profile
+        Initialize an exoplanet atmosphere model with an Earth-like/Jupiter-like density profile
         and wavelength-dependent opacities.
 
         Parameters
@@ -53,8 +54,20 @@ class ExoplanetAtmosphere:
         data = np.load(opacity_file)
         dens = np.load(density_file)
 
-        self.max_height = max_height
-
+        if planet_type == 'gaseous':
+            self.scale_max_height = 3.2e8
+            if max_height is None:
+                self.max_height = 7000 / (c.R_jup.to("km").value)
+            else:
+                self.max_height = max_height
+        elif planet_type == 'rocky':
+            self.scale_max_height = 8e6
+            if max_height is None:
+                self.max_height = 80 / (c.R_earth.to("km").value)
+            else:
+                self.max_height = max_height
+                
+            
         # Create interpolators for opacity and density
         self._opacity_interp = interp1d(
         data["wavelengths"], data["opacities"],
@@ -62,22 +75,24 @@ class ExoplanetAtmosphere:
     )
 
         self._density_interp = interp1d(
-        dens["arr_0"], dens["arr_1"],
+        dens["arr_0"], dens["arr_1"], #radius in cm, density in g cm^-3
         kind="linear", bounds_error=False, fill_value="extrapolate"
     )
 
     # --- Methods ---
 
-    def density_height(self, h_cm, r_planet_cm):
+    def density_height(self, h_cm, r_planet_cm, planet = 'earth'):
         """Atmospheric density [g/cm³] at height h_cm [cm].
            Returns NaN if h outside 0–8e6 cm (~80 km)."""
-        
-        scaled_height = 8e6*h_cm/(self.max_height*r_planet_cm)
+
+        scaled_height = self.scale_max_height*h_cm/(self.max_height*r_planet_cm)
+
         if np.any((scaled_height < 0)):
             return np.nan
-        elif np.any((scaled_height > 8e6)):
+        elif np.any((scaled_height > self.scale_max_height)):
             return 0
-        return self._density_interp(scaled_height)
+        d = self._density_interp(scaled_height)
+        return d
 
     def density_proj_dist(self, d_cm, r_cm, r_planet_cm):
         """Atmospheric density [g/cm³] at projected distance d_cm [cm]."""
@@ -89,12 +104,7 @@ class ExoplanetAtmosphere:
 
         return self._density_interp(lamb_um)
 
-    def integrate(self, integral_length, r_planet_cm, h_cm_masked):
-        return quad(self.density_proj_dist,
-            -integral_length[i], integral_length[i],
-            args=(r_planet_cm+h_cm[mask][i], r_planet_cm,))
-
-    def extinction_sphere(self, h, r_planet, lamb_um, normalize=False, threadcount=20):
+    def extinction_sphere(self, h, r_planet, lamb_um, threadcount=20):
         h_cm  = (h*c.R_sun).to("cm").value
         r_planet_cm  = (r_planet*c.R_sun).to("cm").value
         """
@@ -116,12 +126,15 @@ class ExoplanetAtmosphere:
         """
         
         kappa = self.get_opacity(lamb_um)
+
         max_radius = r_planet_cm + self.max_height * r_planet_cm 
+        
         arg = max_radius**2 - (r_planet_cm+h_cm)**2
         
-        mask = (h_cm / r_planet_cm * 6e8 < 8e6) | (arg > 0)
+        mask = (h_cm / r_planet_cm  < self.max_height) | (arg > 0)
         
         integral_length = np.sqrt(arg[mask])
+
         with Pool(threadcount) as pool:
             res, _ = zip(*tqdm(pool.imap(Integrate((self.density_proj_dist, integral_length, r_planet_cm, h_cm[mask])), range(len(integral_length))), total=len(integral_length)))
 
@@ -131,7 +144,4 @@ class ExoplanetAtmosphere:
         tau[mask] = kappa * res
 
         profile = 1 - np.exp(-tau)
-        if normalize:
-            return profile/profile[0]
-        else:
-            return profile
+        return profile

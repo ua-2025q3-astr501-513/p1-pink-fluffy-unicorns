@@ -26,7 +26,7 @@ class Eddington(object):
 
 
 def generate_exoplanet(framew = 2500,frameh = 2500, image_scale = 3/2500,  planet_radius = 0.5 * c.R_jup/c.R_sun,\
-                            planet_oblateness= 0.1, planet_rot_obliquity = -5*np.pi/180, wavelength = 1, b = 0.3, max_height=1):
+                            planet_oblateness= 0.1, planet_rot_obliquity = -5*np.pi/180, wavelength = 1, b = 0.3, max_height=1, planet_type="rocky", surface=True, no_atmosphere=False):
     """
     Generate an exoplanet mask with an Earth-like atmospheric profile.
 
@@ -41,25 +41,36 @@ def generate_exoplanet(framew = 2500,frameh = 2500, image_scale = 3/2500,  plane
     wavelength - Wavelength observed in microns
     b - Offset of planet due to inclination from the center of the image, in projected solar radii
     max_height - Maximum height of the atmosphere relative to Earth's normalized maximum height
+    planet_type - Planet type, rocky or gaseous
+    surface - Changes definition of planet radius, whether to include or exclude atmosphere (for bodies without a surface)
+    no_atmosphere - Removes atmosphere, overrides other parameters
     """
+
+    if surface and not no_atmosphere:
+        mask_radius = planet_radius*(1+max_height)
+    else:
+        mask_radius = planet_radius
     
-    # Create ExoplanetAtmosphere class
-    exoplanet_atmosphere = ExoplanetAtmosphere("assets/opacity_data.npz","assets/density_profile.npz", max_height)
-
-    # Obtain maximum height in solar radii
-    max_height = exoplanet_atmosphere.max_height*planet_radius
-
-    # Prepare function that generates profile
-    def atmo_func(radii):
-        return exoplanet_atmosphere.extinction_sphere(radii*image_scale, planet_radius, wavelength, normalize=True)
-
     # Create exoplanet mask with parameters without atmosphere
     exoplanet_mask =  elliptical_mask([framew/2 - 0.5, frameh/2 - 0.5 - b/image_scale], framew, frameh,\
-                                    planet_radius/image_scale, (1-planet_oblateness)*planet_radius/image_scale, p = planet_rot_obliquity)
+                                    mask_radius/image_scale, (1-planet_oblateness)*mask_radius/image_scale, p = planet_rot_obliquity)
 
-    # Generate atmospheric profile and add onto the mask 
-    exoplanet_mask = add_atmosphere(exoplanet_mask, atmo_func, R=int(max_height/image_scale))
+    if not no_atmosphere:
+        # Create ExoplanetAtmosphere class
+        if planet_type == "rocky":
+            exoplanet_atmosphere = ExoplanetAtmosphere("assets/opacity_data_earth.npz","assets/density_profile_earth.npz",  planet_type=planet_type, max_height=max_height)
     
+        else:
+            exoplanet_atmosphere = ExoplanetAtmosphere("assets/opacity_data_jupiter.npz","assets/density_profile_jupiter.npz", planet_type=planet_type, max_height=max_height)
+    
+    
+        # Prepare function that generates profile
+        def atmo_func(radii):
+            return exoplanet_atmosphere.extinction_sphere(radii*image_scale, planet_radius, wavelength)
+    
+    
+        # Generate atmospheric profile and add onto the mask 
+        exoplanet_mask = add_atmosphere(exoplanet_mask, atmo_func, max_height*planet_radius/image_scale)
 
     return exoplanet_mask
 
@@ -162,7 +173,7 @@ def integ_func(t, x, u):
     return (1/u)*np.exp(-1*t/u)*(x**3)/(-1+np.exp(x/np.sqrt(np.sqrt(0.75*(t+(2/3))))))
 
     
-def add_atmosphere(mask, atmo_func, R=50):
+def add_atmosphere(mask, atmo_func, max_height):
     
     '''
     Add an exoplanet atmosphere with a certain profile to an existing exoplanet mask 
@@ -173,25 +184,31 @@ def add_atmosphere(mask, atmo_func, R=50):
 
     atmo_func : Exoplanet atmosphere profile
 
-    R: Maximum height of atmosphere
+    max_height: Maximum height of atmosphere (pixels)
     '''
-    
-    mykernel = Box2DKernel(R) 
-    print("Convolving mask....")
-    contour = convolve(mask, mykernel, boundary="fill", fill_value=0)
-    contour[mask == 1] = 1
+    # Convert mask into integer units
+    if mask.dtype != np.uint8:
+        mask = mask.astype(np.uint8)
 
-    radii = np.linspace(0,R, 2*R)[1:-1]
-    brightness = np.linspace(1,0, 2*R)
-    new_contour = np.copy(contour)
-    print("Obtaining atmosphere...")
-    atmo_value = atmo_func(radii)
+    # Create array representing distance from surface, and normalize to stellar radius
+    skeleton = distanceTransform(mask, DIST_L2, DIST_MASK_PRECISE)
+
+    # Create arrays representing relative brightness and distance from surface
+    #radii = np.linspace(0,1, 2*int(R))[1:]
+    height = np.linspace(0, max_height, int(2*max_height))
+    #brightness = np.linspace(1,0, 2*int(R))
+    new_contour = np.copy(skeleton.astype(np.float64))
+    new_contour[skeleton > max_height] = 1
+    # Obtain limb darkening coefficients
+    atmo_values = atmo_func(height)
+
     print("Creating mask...")
-    for i in tqdm(range(len(brightness) - 2)):
-
-        new_contour[(brightness[i] > contour) & (contour >= brightness[i+1])] = atmo_value[i]
+    for i in tqdm(range(len(height) - 1)):
+        
+        new_contour[(skeleton <= height[i+1]) &  (skeleton > height[i])] = atmo_values[-i]
 
     return new_contour
+
 
 def elliptical_mask(center, width, height, x_radius, y_radius, p=0):
     '''
