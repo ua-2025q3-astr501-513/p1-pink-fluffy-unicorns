@@ -35,6 +35,14 @@ Model exoplanet atmosphere extinction.
     - Class for integrating projected density profile for multiprocessing
 - *class*: **ExoplanetAtmosphere**()
     - Initialize an exoplanet atmosphere model with an Earth-like/Jupiter-like density profile and wavelength-dependent opacities.
+    - *function*: **density_height**(self, h_cm - Atmosphere heigh [cm], r_planet_cm - Planet radius [cm], planet - Stored atmosphere (ex: 'earth'))
+        - Atmospheric density [g/cm³] at height h_cm [cm].
+    - *function*: **density_proj_distance**(self, d_cm - Projected distance [cm], r_cm - Overall radius [cm], r_planet_cm - Planet radius [cm])
+        - Atmospheric density [g/cm³] at projected distance d_cm [cm].
+    - *function*: **get_opacity**(self, lamb_um - Wavelength [µm])
+        - Return opacity [cm²/g] at wavelength lamb_um [µm].
+    - *function*: **extinctino_sphere**(self, h - Altitude [cm] above surface, r_planet - Planet radius [cm], lamb_um - Wavelength [µm], threadcount=20)
+        - Calculate extinction factor exp(-tau) through a spherical atmosphere.
     
 
 **pfu_transit/photometry_simulation.py**
