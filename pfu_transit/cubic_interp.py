@@ -148,5 +148,13 @@ def cubic_spline_interpolator(x, y, clamp=True):
 
     return f
 
-
+def read_raw_exotic(path):
+    """Read DATE, DIFF, ERR columns from EXOTIC-style .txt (comma-delimited)."""
+    
+    arr = np.genfromtxt(path, delimiter=",", comments="#", usecols=(0,1,2,3,4), dtype=float)
+    arr = arr[np.isfinite(arr).all(axis=1)]
+    dates, fluxes, errors = arr[:,0], arr[:,1]/arr[:,4], arr[:,2]
+    x = (dates - dates[0]) * 24  # convert to minutes since first observation
+    
+    return x, fluxes, errors
 

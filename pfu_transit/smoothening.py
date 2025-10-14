@@ -52,12 +52,11 @@ def smoothen(dates, fluxes, errors, n=15):
     n+= 1
     
     # calculate the total time of data collection in units of minutes (rounded to closest 5)
-    total_time   = (dates[-1] - dates[0]) * 24 * 60
-    rounded_time = np.round(total_time/5) * 5
+    total_time   = (dates[-1] - dates[0])
     # ensure that date array starts at 0 and convert units from days to minutes
-    dates_mins   = (dates - dates[0]) * 24 * 60
+    dates_mins   = (dates - dates[0])
     # create equally spaced time array, using n to determine how many elements are needed
-    timeslots    = np.linspace(0, rounded_time, n)
+    timeslots    = np.linspace(0, total_time, n)
     bin_centers  = 0.5 * (timeslots[:-1] + timeslots[1:])
     
 
@@ -78,7 +77,7 @@ def smoothen(dates, fluxes, errors, n=15):
 
     data = np.column_stack((bin_centers, smooth_fluxes, smooth_errs))
 
-    np.savetxt(f"assets/smooth_data/{exoplanet_name}_smooth.txt", data, header="time, flux, flux_err", fmt="%.8f",  delimiter=",")
+    #np.savetxt(f"assets/smooth_data/{exoplanet_name}_smooth.txt", data, header="time, flux, flux_err", fmt="%.8f",  delimiter=",")
         
     return bin_centers, np.array(smooth_fluxes), np.array(smooth_errs)
     
