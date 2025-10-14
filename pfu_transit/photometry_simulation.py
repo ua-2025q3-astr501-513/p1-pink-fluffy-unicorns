@@ -136,9 +136,17 @@ def photometry(Rs, Rp, P, t, b, F=2.4, FoV=None, n=None, shape='sphere'):
     
     return obs
 
-# Calcualte recommended "observing session length" based on planet period
 def rec_tt(P, Rs):
-    # Very very simplified method: just finding a fraction of the circumference 
+    """
+    Calcualte recommended observing times based on planet period and stellar radius.
+
+    Parameters
+    ----------
+    P - Planet period [d]
+    Rs - Stellar radius [m]
+    """
+    
+    # Very very simplified method: just finding a fraction of the circumference and compare to planet period
     circ = 2*np.pi*((P/365.25)**(2/3))*215 # P = [year]; a = [AU]*[215RS/AU]
     rtt = P*(Rs/circ) # [days]
     return rtt
