@@ -39,7 +39,7 @@ def generate_exoplanet(framew = 2500,frameh = 2500, image_scale = 3/2500,  plane
     planet_oblateness - Planet oblateness
     planet_rot_obliquity - Obliquity of the rotational axis of the planet, assuming ellipticity by rotation
     wavelength - Wavelength observed in microns
-    b - Offset of planet due to inclination from the center of the image, in projected solar radii
+    b - Impact parameter: offset of planet due to inclination from the center of the image, in projected solar radii
     max_height - Maximum height of the atmosphere relative to Earth's normalized maximum height
     planet_type - Planet type, rocky or gaseous
     surface - Changes definition of planet radius, whether to include or exclude atmosphere (for bodies without a surface)

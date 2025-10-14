@@ -58,9 +58,15 @@ def photometric_observation(star, planet, velocity=1, image_scale=3/2500, step=1
 
     # Create steps for the simulator
     iterator = np.arange(0, array_shape[1] - planet_width, step=step)
-    
-    with Pool(threadcount) as pool:
-        flux, _ = zip(*tqdm(pool.imap(CalculateFlux((new_planet, star, image_directory)), iterator), total=len(iterator)))
+
+    if threadcount > 1:
+        with Pool(threadcount) as pool:
+            flux, _ = zip(*tqdm(pool.imap(CalculateFlux((new_planet, star, image_directory)), iterator), total=len(iterator)))
+    else:
+        flux_calculator = CalculateFlux((new_planet, star, image_directory))
+        flux = np.zeros(len(iterator))
+        for i in range(len(iterator)):
+            flux[i], _ = flux_calculator(iterator[i])
 
     return np.asarray(iterator)*image_scale/velocity, np.asarray(flux)
                                 
