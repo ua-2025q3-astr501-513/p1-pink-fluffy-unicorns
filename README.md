@@ -1,10 +1,10 @@
 # Exoplanet Transits by Pink Fluffy Unicorns
-#### Nina Brown, Lipika Chatur, Aditya Khandelwal, Lael Shin, Vivek Vijayakumar
+#### Authors: Nina Brown, Lipika Chatur, Aditya Khandelwal, Lael Shin, Vivek Vijayakumar
 
 This code can model exoplanet transits, and apply these models to fit real transit data. What makes us special? We can fit any silly little planet you can think of.
 
 Details -- this code can:
-- simulate an exoplanet transit with user-specified R$_p$, R$_{*}$, P, and planet shape, as well as return a transit curve
+- simulate an exoplanet transit with user-specified Rp, R*, P, and planet shape, as well as return a transit curve
 - add host star limb-darkening
 - add an exoplanet atmosphere
 - smooth real photometry datapoints
