@@ -1,3 +1,53 @@
+# Exoplanet Transits by Pink Fluffy Unicorns
+#### Authors: Nina Brown, Lipika Chatur, Aditya Khandelwal, Lael Shin, Vivek Vijayakumar
+
+This code can model exoplanet transits, and apply these models to fit real transit data. What makes us special? We can fit any silly little planet you can think of.
+
+Details -- this code can:
+- simulate an exoplanet transit with user-specified Rp, R*, P, and planet shape, as well as return a transit curve
+- add host star limb-darkening
+- add an exoplanet atmosphere
+- smooth real photometry datapoints
+- interpolate a curve on smoothed datapoints
+- find the **best-fit** parameters to fit the observed system
+
+# Installation:
+
+```
+git clone https://github.com/ua-2025q3-astr501-513/p1-pink-fluffy-unicorns.git
+cd p1-pink-fluffy-unicorns
+pip install -e .
+```
+
+# Running (examples): 
+
+Modelling a transit lightcurve: 'basic_model_transit.ipynb'
+- simulates a transit based on user-input parameters
+- returns simulated photometry datapoints
+
+Model fitting: 'model_fitting.ipynb'
+- loads in real transit photometry datapoints
+- smoothes data and interpolates a lightcurve
+- grid search over many parameters to find the closest-matching model curve
+- returns the best-fit system parameters
+
+# Dependencies:
+
+- numpy
+- matplotlib
+- astropy
+- scipy
+- opencv-python
+- tqdm
+- Pillow
+- concurrent
+- multiprocessing
+- PIL
+- os
+- cv2
+
+# Assignment:
+
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/nqfiwWTG)
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=20651225&assignment_repo_type=AssignmentRepo)
 # ASTR 513 Mid-Term Project

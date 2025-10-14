@@ -11,6 +11,11 @@ dependencies = [
     "opencv-python",
     "tqdm",
     "Pillow",
+    "concurrent",
+    "multiprocessing",
+    "PIL",
+    "os",
+    "cv2",
 ]
 
 [tool.setuptools.packages.find]

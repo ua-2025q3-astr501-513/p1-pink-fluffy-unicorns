@@ -73,9 +73,21 @@ def photometric_observation(star, planet, velocity=1, image_scale=3/2500, step=1
 
 # Get a simulated observation -- photometric points are just a sum of the returned array:
 def photometry(Rs, Rp, P, t, b, F=2.4, FoV=None, n=None, shape='sphere'):
-    #Rs and Rp will both be in solar radii
-#    Rs *= 1 # solar radii
-#    Rp *= c.R_jup/c.R_sun
+    """
+    Create an array for every frame for our transit.
+
+    Parameters
+    ----------
+    Rs - Stellar radius [m]
+    Rp - Planet radius [m]
+    P - Planet period [d]
+    t - array of observing times [d]
+    b - lateral displacement from center [n/Rs]
+    F - flux [solar flux]
+    FoV - frame size [Rs]
+    n - resolution
+    shape - 'sphere', 'square', or custom mask
+    """
     
     if not FoV:
         FoV = int(Rs*3) # field of view
@@ -124,9 +136,17 @@ def photometry(Rs, Rp, P, t, b, F=2.4, FoV=None, n=None, shape='sphere'):
     
     return obs
 
-# Calcualte recommended "observing session length" based on planet period
 def rec_tt(P, Rs):
-    # Very very simplified method: just finding a fraction of the circumference 
+    """
+    Calcualte recommended observing times based on planet period and stellar radius.
+
+    Parameters
+    ----------
+    P - Planet period [d]
+    Rs - Stellar radius [m]
+    """
+    
+    # Very very simplified method: just finding a fraction of the circumference and compare to planet period
     circ = 2*np.pi*((P/365.25)**(2/3))*215 # P = [year]; a = [AU]*[215RS/AU]
     rtt = P*(Rs/circ) # [days]
     return rtt
