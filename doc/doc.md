@@ -1,5 +1,7 @@
 **assets/**
 - hosts example data
+- Mass density profile of Earth and Jupiter atmosphere
+- Opacity of Earth and Jupiter atmosphere
 
 
 **pfu_transit/**
@@ -13,7 +15,7 @@ Create star and planet masks.
     - Class for parallelizing calculation of limb darkening coefficients, an integration of the Eddington approximation
 - *function*: **generate_exoplanet**(framew - Frame width in pixels, frameh - Frame height in pixels, image_scale - Image scale in solar radii / px, planet_radius - Planet radius in solar radii, planet_oblateness - Planet oblateness, planet_rot_obliquity - Obliquity of the rotational axis of the planet, assuming ellipticity by rotation, wavelength - Wavelength observed in microns, b - Impact parameter: offset of planet due to inclination from the center of the image, in projected solar radii, max_height - Maximum height of the atmosphere relative to Earth's normalized maximum height, planet_type)
 - Planet type, rocky or gaseous, surface - Changes definition of planet radius, whether to include or exclude atmosphere (for bodies without a surface), no_atmosphere - Removes atmosphere, overrides other parameters)
-    - Generate an exoplanet mask with an Earth-like atmospheric profile.
+    - Generate an exoplanet mask with an Earth-like or Jupiter-like atmospheric profile.
 - *function*: **generate_star**(framew - Frame width in pixels, frameh - Frame height in pixels, image_scale - Image scale in solar radii / px, stellar_radius - Stellar radius in solar radii, stellar_oblateness - Stellar oblateness, stellar_rot_obliquity - Obliquity of the rotational axis of the star, assuming ellipticity by rotation, stellar_temperature - Temperature of the star in Kelvin, wavelength - Wavelength observed in microns)
     - Generate a star mask assuming a blackbody and Eddington approximated limb darkening.
 - *function*: **limb_darken**(mask - Star mask, stellar_radius - Stellar radius in solar radii, T - Temperature of the star in Kelvin, l - wavelength in microns)
