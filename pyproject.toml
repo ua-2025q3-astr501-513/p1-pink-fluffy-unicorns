@@ -1,0 +1,22 @@
+[project]
+name = "astr513-pink-fluffy-unicorns"
+version = "1.0"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "astropy",
+    "scipy",
+    "opencv-python",
+    "tqdm",
+    "Pillow",
+    "concurrent",
+    "multiprocessing",
+    "PIL",
+    "os",
+    "cv2",
+]
+
+[tool.setuptools.packages.find]
+include = ["pfu_transit"]

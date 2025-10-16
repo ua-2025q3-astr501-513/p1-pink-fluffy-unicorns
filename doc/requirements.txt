@@ -1,0 +1,12 @@
+numpy
+matplotlib
+astropy
+scipy
+opencv-python
+tqdm
+Pillow
+concurrent
+multiprocessing
+PIL
+os
+cv2
